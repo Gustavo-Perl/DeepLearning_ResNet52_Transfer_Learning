@@ -1,0 +1,76 @@
+
+import numpy as np
+import pandas as pd
+import os
+import shutil
+import random
+
+base_dir = '/Users/gusta/OneDrive/Área de Trabalho/MODELS/ResNet_transfer_learning/0.Code/dogs-vs-cats'
+train_dir = os.path.join(base_dir, 'train').replace("\\","/")
+validation_dir = os.path.join(base_dir, 'validation').replace("\\","/")
+os.mkdir(validation_dir)
+test_dir = os.path.join(base_dir, 'test').replace("\\","/")
+
+train_cats_dir = os.path.join(train_dir, 'cats').replace("\\","/")
+os.mkdir(train_cats_dir)
+train_dogs_dir = os.path.join(train_dir, 'dogs').replace("\\","/")
+os.mkdir(train_dogs_dir)
+
+val_cats_dir = os.path.join(validation_dir, 'cats').replace("\\","/")
+os.mkdir(val_cats_dir)
+val_dogs_dir = os.path.join(validation_dir, 'dogs').replace("\\","/")
+os.mkdir(val_dogs_dir)
+
+test_cats_dir = os.path.join(test_dir, 'cats').replace("\\","/")
+os.mkdir(test_cats_dir)
+test_dogs_dir = os.path.join(test_dir, 'dogs').replace("\\","/")
+os.mkdir(test_dogs_dir)
+
+path, dirs, files = next(os.walk(train_dir))
+list_cats = [x for x in files if 'cat' in x]
+list_dogs = [x for x in files if 'dog' in x]
+
+for i in list_dogs:
+    src = os.path.join(train_dir, i)
+    dst = os.path.join(train_dogs_dir, i)
+    shutil.move(src, dst)
+
+for i in list_cats:
+    src = os.path.join(train_dir, i)
+    dst = os.path.join(train_cats_dir, i)
+    shutil.move(src, dst)
+
+list_dogs_val = random.sample(list_dogs, int(len(list_dogs)*0.3))
+for i in list_dogs_val:
+    src = os.path.join(train_dogs_dir, i)
+    dst = os.path.join(val_dogs_dir, i)
+    shutil.move(src, dst)
+
+list_cats_val = random.sample(list_cats, int(len(list_cats)*0.3))
+for i in list_cats_val:
+    src = os.path.join(train_cats_dir, i)
+    dst = os.path.join(val_cats_dir, i)
+    shutil.move(src, dst)
+
+path, dirs, files = next(os.walk(train_dogs_dir))
+list_dogs = [x for x in files if 'dog' in x]
+
+list_dogs_test = random.sample(list_dogs, int(len(list_dogs)*0.05))
+for i in list_dogs_test:
+    src = os.path.join(train_dogs_dir, i)
+    dst = os.path.join(test_dogs_dir, i)
+    shutil.move(src, dst)
+
+path, dirs, files = next(os.walk(train_cats_dir))
+list_cats = [x for x in files if 'cat' in x]
+
+list_cats_val = random.sample(list_cats, int(len(list_cats)*0.05))
+for i in list_cats_val:
+    src = os.path.join(train_cats_dir, i)
+    dst = os.path.join(test_cats_dir, i)
+    shutil.move(src, dst)
+
+print(train_dir)
+print(validation_dir)
+print(test_dir)
+
